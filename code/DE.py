@@ -22,7 +22,7 @@ EXCEL_FILE = "output/DE/output_" + name + ".xlsx" # Where to save Excel file (ou
 # --- Painless runner config ---
 PAINLESS_BIN = "./painless/build/release/painless_release"  # painless binary path
 PAINLESS_ARGS = ["-c=4", "-solver=ccck"]       # Painless args
-RUN_PAINLESS = False # Run Painless solver or not
+RUN_PAINLESS = True # Run Painless solver or not
 
 top_id = 2
 
@@ -502,7 +502,7 @@ def solve():
         lst.append(os.path.join(folder_path, os.path.basename(file)))
         filename.append(os.path.basename(file))
 
-    for i in range(0, 5):
+    for i in range(0, len(lst)): # Choose how many files to run by changing the range
 
         time_start = time.time()
         graph, k, lb, ub = read_input(lst[i])

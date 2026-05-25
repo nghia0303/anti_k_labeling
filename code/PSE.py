@@ -22,7 +22,7 @@ EXCEL_FILE = "output/PSE/output_" + name + ".xlsx" # Where to save Excel file (o
 # --- Painless runner config ---
 PAINLESS_BIN = "./painless/build/release/painless_release"  # painless binary path
 PAINLESS_ARGS = ["-c=4", "-solver=ccck"]       # Painless args
-RUN_PAINLESS = False # Run Painless solver or not
+RUN_PAINLESS = True # Run Painless solver or not
 
 top_id = 2
 
@@ -109,6 +109,9 @@ def solve_no_hole_anti_k_labeling(graph, k, width, queue, timeout_sec=1800, inst
             for labelu in range(1, k + 1):
                 minv = max(0, labelu - width)
                 maxv = min(k + 1, labelu + width)
+                if minv == 0 and maxv == k + 1:
+                    clauses.append([-x[u][labelu]])
+                    continue
                 if minv == 0:
                     clauses.append([-x[u][labelu], -L[v][labelu + width - 1]])
                 if maxv == k + 1:
@@ -120,6 +123,9 @@ def solve_no_hole_anti_k_labeling(graph, k, width, queue, timeout_sec=1800, inst
             for labelv in range(1, k + 1):
                 minu = max(0, labelv - width)
                 maxu = min(k + 1, labelv + width)
+                if minu == 0 and maxu == k + 1:
+                    clauses.append([-x[v][labelv]])
+                    continue
                 if minu == 0:
                     clauses.append([-x[v][labelv], -L[u][labelv + width - 1]])
                 if maxu == k + 1:
@@ -545,7 +551,7 @@ def solve():
         lst.append(os.path.join(folder_path, os.path.basename(file)))
         filename.append(os.path.basename(file))
 
-    for i in range(0, 6):
+    for i in range(0, len(lst)): # Choose how many files to run by changing the range
 
         time_start = time.time()
         graph, k, lb, ub = read_input(lst[i])
